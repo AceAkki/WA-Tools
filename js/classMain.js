@@ -11,7 +11,7 @@ export class Main {
 
     initMain(){
         this.populateOptions();
-        this.updateSelect()
+        //this.updateSelect()
         this.btnWrap.addEventListener("click", (event)=> {
             let error = false;
             if (this.selectPrefix.value === "0" && this.inputPrefix.value === "") {
@@ -134,4 +134,5 @@ export class Main {
             }
         });
     }
+
 }
