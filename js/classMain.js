@@ -2,16 +2,16 @@ import { Utility } from "./classUtility.js";
 const classUtility = new Utility();
 
 export class Main {
-    constructor({selectElm, prefixElm, mobileElm, btnsParent}){
-        this.selectPrefix = selectElm;
-        this.inputPrefix = prefixElm;
-        this.inputMobile = mobileElm;
-        this.btnWrap = btnsParent;
+    constructor({selectSelector, prefixSelector, mobileSelector, btnsParent}){
+        this.selectPrefix = document.querySelector(selectSelector);
+        this.inputPrefix = document.querySelector(prefixSelector);
+        this.inputMobile = document.querySelector(mobileSelector);
+        this.btnWrap = document.querySelector(btnsParent);
     }
 
     initMain(){
         this.populateOptions();
-        //this.updateSelect()
+        this.updateSelect();
         this.btnWrap.addEventListener("click", (event)=> {
             let error = false;
             if (this.selectPrefix.value === "0" && this.inputPrefix.value === "") {
@@ -125,14 +125,21 @@ export class Main {
         }
     }   
 
+    // automatically update select after geolocation is enabled
     updateSelect() {
-        // automatically shows current location based on navigator.geolocation
-        let countryCode = classUtility.getCountry();
-        Array.from(this.selectPrefix.querySelectorAll("option")).find((elm) => {
-            if (elm.getAttribute("data-countrycode").toLowerCase() === countryCode.toLowerCase()) {
-                elm.setAttribute("selected", "");
+        classUtility.getLocation()
+        .then(async (locationObject) => {
+            // automatically shows current location based on navigator.geolocation
+            let countryCode = await classUtility.getCountry(locationObject.coords.latitude, locationObject.coords.longitude);
+            if (countryCode !== undefined) {
+                Array.from(this.selectPrefix.querySelectorAll("option")).forEach(elem => elem.removeAttribute("selected", ""));
+                Array.from(this.selectPrefix.querySelectorAll("option")).find((elm) => {
+                    if (elm.getAttribute("data-countrycode").toLowerCase() === countryCode.toLowerCase()) {
+                        elm.setAttribute("selected", "");
+                    }
+                });                
             }
-        });
+        })
+        .catch(err => console.log(err))
     }
-
 }

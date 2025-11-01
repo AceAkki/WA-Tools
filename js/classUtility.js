@@ -32,19 +32,34 @@ export class Utility {
           }).showToast()
     }
 
-    async getCountry(){
-      let [latitude, longitude] = this.getLocation();
+    // two apis commented out to use, returns countryCode to use and needs latitude and longitude
+    async getCountry(latitude, longitude){
       /* 
       api-0 - https://nominatim.openstreetmap.org/reverse?lat=52.2296756&lon=21.0122287&.json
       api-1 - https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=37.42159&longitude=-122.0837
       */
       let locData = await this.fetchAPI(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}`);
-      return locData.countryCode;
+      return (locData !== undefined) ? locData.countryCode : "default";
     }
 
+    // checkPermission(){
+    //   setInterval( ()=> {
+    //     navigator.permissions.query({name:"geolocation"}).then((permissionStatus) => {
+    //       console.log(permissionStatus)
+    //       if (permissionStatus.state === "granted") {
+    //         console.log("granted")
+    //       }
+    //     })
+    //   }, 1000)
+    // }
+
+    // returns promise that checks current geolocation and resolve when receives object
     getLocation(){
-      navigator.geolocation.getCurrentPosition(position => {
-        return [position.coords.latitude, position.coords.longitude]
-      })
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition((locationObject) => {
+          resolve(locationObject);
+        }, err => reject(err));
+      });
     }
+
 }
