@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", ()=> {
     render(document.querySelector("#root"));
     const classMain = new Main({ selectSelector:"#prefixSelect", prefixSelector:"#prefixInput", mobileSelector:"#mobileNumber", btnsParent:".buttons" });
     classMain.initMain();
-    console.log("JavaScript Loaded");
 })
 
 function render(container) {
@@ -42,3 +41,4 @@ function render(container) {
     `
 
 }
+
